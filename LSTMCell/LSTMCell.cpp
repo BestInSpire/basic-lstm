@@ -72,4 +72,21 @@ void LSTMCell::forward(const vector<double>& x) {
     for (int i = 0; i < hidden_size; ++i) {
         c_hat[i] = relu(Wc[i] * combined_input[i] + bc[i]);
     }
+
+    vector<double> c_new(hidden_size);
+    vector<double> h_new(hidden_size);
+
+    for (int i = 0; i < hidden_size; ++i) {
+        c_new[i] = f[i] * c_prev[i] + i_gate[i] * c_hat[i];
+        h_new[i] = o_gate[i] * tanh_activation(c_new[i]);
+    }
+
+    h_prev = h_new;
+    c_prev = c_new;
+
+    cout << "Hidden State: ";
+    for (double val : h_new) {
+        cout << val << " ";
+    }
+    cout << endl;
 }
