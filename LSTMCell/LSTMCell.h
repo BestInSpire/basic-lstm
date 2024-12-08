@@ -1,32 +1,46 @@
-#ifndef LSTM_CELL_H
-#define LSTM_CELL_H
+#ifndef LSTM_H
+#define LSTM_H
 
 #include <vector>
-using namespace std;
+#include <random>
+#include <cmath>
+#include <iostream>
 
-class LSTMCell {
+class LSTM {
 public:
+    LSTM(int input_size, int hidden_size);
+
+    void forward(const std::vector<double>& input);
+    std::vector<double> get_hidden_state() const;
+
+    // Training methods
+    double calculate_loss(const std::vector<double>& predicted, const std::vector<double>& actual) const;
+    void update_weights(std::vector<std::vector<double>>& weights, const std::vector<std::vector<double>>& gradients, double learning_rate);
+
+private:
     int input_size;
     int hidden_size;
 
-    vector<double> Wf, Wi, Wo, Wc;
-    vector<double> bf, bi, bo, bc;
+    // LSTM weights and biases
+    std::vector<std::vector<double>> Wf, Wi, Wo, Wc;
+    std::vector<double> bf, bi, bo, bc;
 
-    vector<double> h_prev, c_prev;
+    // Hidden and cell states
+    std::vector<double> h, c;
 
-    // Constructor
-    LSTMCell(int input_size, int hidden_size);
+    void initialize_weights();
 
-    // Sigmoid activation function
-    static double sigmoid(double x);
-
-    // Tanh activation function
-    static double tanh_activation(double x);
-
-    // ReLU activation function
-    static double relu(double x);
-
-    void forward(const vector<double>& x);
+    // Helper functions
+    static std::vector<double> mat_mul(const std::vector<std::vector<double>>& mat,
+                                       const std::vector<double>& vec,
+                                       const std::vector<double>& bias);
+    static std::vector<double> sigmoid(const std::vector<double>& vec);
+    static std::vector<double> tanh(const std::vector<double>& vec);
+    static std::vector<std::vector<double>> random_matrix(int rows, int cols);
+    static std::vector<double> random_vector(int size);
 };
+
+void train(LSTM& lstm, const std::vector<std::vector<double>>& train_inputs, 
+           const std::vector<std::vector<double>>& train_targets, int epochs, double learning_rate);
 
 #endif

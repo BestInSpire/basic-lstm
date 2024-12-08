@@ -1,23 +1,21 @@
+#include "LSTMCell/LSTMCell.h"
 #include <vector>
-#include "./LSTMCell/LSTMCell.h"
-
+#include <iostream>
 
 int main() {
-    int input_size = 5;
-    int hidden_size = 4;
+    int input_size = 3;  // Number of input features
+    int hidden_size = 10; // Number of hidden units
 
-    LSTMCell lstm(input_size, hidden_size);
+    LSTM lstm(input_size, hidden_size);
 
+    // Training data (replace with your own data)
+    std::vector<std::vector<double>> train_inputs = {{1.0, 0.5, -1.0}, {0.5, -0.5, 0.0}};
+    std::vector<std::vector<double>> train_targets = {{0.0, 1.0, 0.5, -0.5}, {0.5, 0.0, -0.5, -1.0}};
 
-    vector<vector<double>> time_series_data = {
-        {1.0, 0.5, -1.5, 0.75, -1.3},
-        {0.8, 0.2, -1.0, 0.60, -0.9},
-        {1.2, 0.7, -1.2, 0.90, -1.1}
-    };
+    int epochs = 100;
+    double learning_rate = 0.1;
 
-    for (const auto& input : time_series_data) {
-        lstm.forward(input);
-    }
+    train(lstm, train_inputs, train_targets, epochs, learning_rate);
 
     return 0;
 }
