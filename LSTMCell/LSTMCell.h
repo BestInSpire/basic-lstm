@@ -6,41 +6,48 @@
 #include <cmath>
 #include <iostream>
 
+// Struct for LSTM weights and biases
+struct LSTMWeights {
+    double** Wf;
+    double** Wi;
+    double** Wo;
+    double** Wc;
+    double* bf;
+    double* bi;
+    double* bo;
+    double* bc;
+};
+
+// Struct for LSTM states
+struct LSTMStates {
+    double* h; // Hidden state
+    double* c; // Cell state
+};
+
+// LSTM Class
 class LSTM {
 public:
     LSTM(int input_size, int hidden_size);
+    ~LSTM();
 
-    void forward(const std::vector<double>& input);
-    std::vector<double> get_hidden_state() const;
-
-    // Training methods
-    double calculate_loss(const std::vector<double>& predicted, const std::vector<double>& actual) const;
-    void update_weights(std::vector<std::vector<double>>& weights, const std::vector<std::vector<double>>& gradients, double learning_rate);
+    void forward(double* input);
+    double* get_hidden_state() const;
 
 private:
     int input_size;
     int hidden_size;
 
-    // LSTM weights and biases
-    std::vector<std::vector<double>> Wf, Wi, Wo, Wc;
-    std::vector<double> bf, bi, bo, bc;
-
-    // Hidden and cell states
-    std::vector<double> h, c;
+    LSTMWeights* weights;
+    LSTMStates* states;
 
     void initialize_weights();
+    void free_weights();
 
-    // Helper functions
-    static std::vector<double> mat_mul(const std::vector<std::vector<double>>& mat,
-                                       const std::vector<double>& vec,
-                                       const std::vector<double>& bias);
-    static std::vector<double> sigmoid(const std::vector<double>& vec);
-    static std::vector<double> tanh(const std::vector<double>& vec);
-    static std::vector<std::vector<double>> random_matrix(int rows, int cols);
-    static std::vector<double> random_vector(int size);
+    static double* mat_mul(double** mat, double* vec, double* bias, int rows, int cols);
+    static double sigmoid(double x);
+    static double tanh(double x);
+    static double* vector_tanh(double* vec, int size);
+    static double* vector_sigmoid(double* vec, int size);
 };
-
-void train(LSTM& lstm, const std::vector<std::vector<double>>& train_inputs, 
-           const std::vector<std::vector<double>>& train_targets, int epochs, double learning_rate);
 
 #endif
