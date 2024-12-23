@@ -1,21 +1,21 @@
-#include "LSTMCell/LSTMCell.h"
-#include <vector>
-#include <iostream>
+#include "LSTMCell/lstm.h"
 
 int main() {
-    int input_size = 3;  // Number of input features
-    int hidden_size = 10; // Number of hidden units
+    int input_size = 3;
+    int hidden_size = 10;
 
     LSTM lstm(input_size, hidden_size);
 
-    // Training data (replace with your own data)
-    std::vector<std::vector<double>> train_inputs = {{1.0, 0.5, -1.0}, {0.5, -0.5, 0.0}};
-    std::vector<std::vector<double>> train_targets = {{0.0, 1.0, 0.5, -0.5}, {0.5, 0.0, -0.5, -1.0}};
+    double input[] = {1.0, 0.5, -1.0};
+    lstm.forward(input);
 
-    int epochs = 100;
-    double learning_rate = 0.1;
+    double* hidden_state = lstm.get_hidden_state();
 
-    train(lstm, train_inputs, train_targets, epochs, learning_rate);
+    std::cout << "Hidden state: ";
+    for (int i = 0; i < hidden_size; ++i) {
+        std::cout << hidden_state[i] << " ";
+    }
+    std::cout << std::endl;
 
     return 0;
 }
